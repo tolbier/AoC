@@ -14,6 +14,6 @@ class GroupsKtTest {
     @Test
     fun pattern123() {
         val result = listOf(1,2,3).pattern()
-        assertEquals("^[\\.\\?]*([#\\?]{1}))[\\.\\?]+([#\\?]{2}))[\\.\\?]+([#\\?]{3})[\\.\\?]*\$",result)
+        assertEquals("^[\\.\\?]*([#\\?]{1})[\\.\\?]+([#\\?]{2})[\\.\\?]+([#\\?]{3})[\\.\\?]*\$",result)
     }
 }

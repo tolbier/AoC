@@ -5,24 +5,19 @@ fun main(){
     Day12().main()
 }
 
-
-
-
-
-
-
 class Day12 {
    fun main(){
        val records = getRecords()
-       println(records)
+//       println(records)
 
-
-       val options= ".??..??...?##.".options()
-       println(options)
+       val result = records.p1()
+       println(result)
+       val resultP2 = records.p2()
+       println(resultP2)
    }
 
     private fun getRecords ():List<Record> {
-        val fileName = "/com/xing/aoc23/day12/example_input.txt"
+        val fileName = "/com/xing/aoc23/day12/input.txt"
 
        return  try {
             val a = Day12::class.java.getResourceAsStream(fileName)?.bufferedReader()

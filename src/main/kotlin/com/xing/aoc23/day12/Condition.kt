@@ -1,10 +1,11 @@
 package com.xing.aoc23.day12
 
 typealias Condition = String
-
+val regex = Regex("\\?")
 fun Condition.options():List<Condition> {
-    val regex = Regex("\\?")
-    val positions =regex.findAll(this).map { it.range.first }.toList()
+
+    var positions =regex.findAll(this).map { it.range.first }.toList() + length
+
 
     return positions.map{ position->
         this.mapIndexed { index, c ->
@@ -18,3 +19,7 @@ fun Condition.options():List<Condition> {
         }.joinToString (separator = "")
     }
 }
+
+fun Condition.isFinal()= this.all{it != '?'}
+
+fun Condition.multiply(repeats: Int): Condition =  List(repeats){this}.joinToString(separator = "?")
