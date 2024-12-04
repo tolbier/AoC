@@ -10,8 +10,8 @@ class Day12 {
        val records = getRecords()
 //       println(records)
 
-       val result = records.p1()
-       println(result)
+//       val result = records.p1()
+//       println(result)
        val resultP2 = records.p2()
        println(resultP2)
    }
