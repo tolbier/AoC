@@ -6,6 +6,26 @@ fun Puzzle.countXMAS() = sumOf(Line::countXMAS)
 fun Puzzle.countSAMX() = sumOf(Line::countSAMX)
 
 fun Puzzle.width() = size
+fun Puzzle.cell(x: Int, y: Int): Char = this.getOrNull(y)?.getOrNull(x)?:'.'
+
+
+fun Puzzle.isXMas(x: Int, y: Int):Boolean {
+    val c0 =cell(x, y)
+    val c1 =cell(x-1, y-1)
+    val c2 =cell(x+1, y-1)
+    val c3 =cell(x-1, y+1)
+    val c4 =cell(x+1, y+1)
+
+    val result = (c0=='A') &&
+            (
+                    ( c1=='M' && c2=='M' && c3=='S' && c4=='S'  ) ||
+                    ( c1=='M' && c2=='S' && c3=='M' && c4=='S'  ) ||
+                    ( c1=='S' && c2=='S' && c3=='M' && c4=='M'  ) ||
+                    ( c1=='S' && c2=='M' && c3=='S' && c4=='M'  )
+            )
+    return result
+}
+
 fun Puzzle.rotate90ClockWise():Puzzle{
     var result = MutableList(size){""}
     (0..<width()).forEach { x ->

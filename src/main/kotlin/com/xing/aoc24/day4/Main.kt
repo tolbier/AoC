@@ -14,13 +14,36 @@ class Day4 {
        val puzzle45Anticlockwise = puzzle.rotate45AnticlockWise()
        println(puzzle45Anticlockwise)
 
-       val result =
-           puzzle.countXMAS() + puzzle.countSAMX() +
-               puzzle90Clockwise.countXMAS() + puzzle90Clockwise.countSAMX()+
-                   puzzle45Clockwise.countXMAS() + puzzle45Clockwise.countSAMX() +
-                puzzle45Anticlockwise.countXMAS() + puzzle45Anticlockwise.countSAMX()
-   println(result)
+       val resultP1 =
+           p1(puzzle, puzzle90Clockwise, puzzle45Clockwise, puzzle45Anticlockwise)
+        println(resultP1)
+
+       val resultP2 =
+           p2(puzzle)
+       println(resultP2)
+
    }
+
+    private fun p2(puzzle: Puzzle): Int {
+        var result = 0
+        puzzle.indices.forEach { y ->
+            puzzle.indices.forEach { x->
+                if (puzzle.isXMas(x,y))
+                    result++
+            }
+        }
+        return result
+    }
+
+    private fun p1(
+        puzzle: Puzzle,
+        puzzle90Clockwise: Puzzle,
+        puzzle45Clockwise: Puzzle,
+        puzzle45Anticlockwise: Puzzle
+    ) = puzzle.countXMAS() + puzzle.countSAMX() +
+            puzzle90Clockwise.countXMAS() + puzzle90Clockwise.countSAMX() +
+            puzzle45Clockwise.countXMAS() + puzzle45Clockwise.countSAMX() +
+            puzzle45Anticlockwise.countXMAS() + puzzle45Anticlockwise.countSAMX()
 
     private fun getPuzzle ():Puzzle {
         val fileName = "/com/xing/aoc24/day4/input.txt"
@@ -34,6 +57,7 @@ class Day4 {
         }
     }
 }
+
 
 
 
