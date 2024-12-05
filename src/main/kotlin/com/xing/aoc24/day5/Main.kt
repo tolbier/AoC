@@ -10,11 +10,18 @@ class Day5 {
        println(updates)
        val resultP1 = p1(updates,rules)
         println(resultP1)
+       val resultP2 = p2(updates,rules)
+       println(resultP2)
    }
 
     private fun p1(updates: Updates, rules: Rules): Int {
-        val correctUpdates= updates.getSumofMiddleCorrectUpdates(rules)
-        return correctUpdates
+        val sumOfMiddleCorrectUpdates= updates.getSumofMiddleCorrectUpdates(rules)
+        return sumOfMiddleCorrectUpdates
+    }
+    private fun p2(updates: Updates, rules: Rules): Int {
+        val sumOfMiddleWrongAndSortedUpdates= updates.getSumofMiddleWrongAndSortedUpdates(rules)
+        return sumOfMiddleWrongAndSortedUpdates
+
     }
 
     private fun getRulesAndUpdates ():Pair<Rules ,Updates> {
