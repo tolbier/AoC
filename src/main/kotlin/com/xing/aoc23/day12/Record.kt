@@ -13,7 +13,15 @@ data class Record (
         condition.multiply(repeats),
         groups.multiply(repeats)
     )
+    fun reduce()= reduceLeft().reduceRight()
 
+    private fun reduceLeft(): Record {
+        return Record("", emptyList())
+        //
+    }
+    private fun reduceRight(): Record {
+        return Record("", emptyList())
+    }
 }
 fun matches(regExStr: String) =
     regExStr.toRegex()
@@ -24,8 +32,9 @@ fun <T, R> memoize(function: (T) -> R): (T) -> R {
         cache.getOrPut(input) { function(input) }
     }
 }
-fun getArrangements(record: Record):Long {
-    if (record.condition.isFinal()) return  1
+fun getArrangements(_record: Record):Long {
+    if (_record.condition.isFinal()) return  1
+    val record = _record.reduce()
     val options = record.condition.options()
     val matchedRecords =
         options
@@ -37,6 +46,9 @@ fun getArrangements(record: Record):Long {
         }
     return result
 }
+
+
+
 fun patternRegex(groups: Groups): Regex =
    groups.pattern().toRegex()
 fun patternRegexString(groups: Groups): String =
