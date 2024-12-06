@@ -16,3 +16,16 @@ fun Groups.pattern():String {
     return result
 }
 
+fun Groups.reduceFirstGroup(): Groups {
+    val first =this.first()-1
+    val rest = this.drop(1)
+    if (first==0) return rest
+    return listOf( first) +  rest
+}
+
+fun Groups.reduceLastGroup(): Groups {
+    val last =this.last()-1
+    val rest = this.dropLast(1)
+    if (last==0) return rest
+    return rest + listOf(last)
+}

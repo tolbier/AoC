@@ -13,16 +13,34 @@ data class Record (
         condition.multiply(repeats),
         groups.multiply(repeats)
     )
-    fun reduce()= reduceLeft().reduceRight()
+    fun canBeReduced():Boolean{
+        if (condition.isEmpty() ||
+            groups.isEmpty() || groups== listOf(1,1) || (groups.size==1 && listOf(1,2).contains(groups[0]))) return false
 
-    private fun reduceLeft(): Record {
-        return Record("", emptyList())
-        //
+        val cannotBeReduced = condition.first()=='?' && condition.last()=='?'
+        return !cannotBeReduced
     }
-    private fun reduceRight(): Record {
-        return Record("", emptyList())
+
+    fun reduceDot(): Record {
+        var result = condition
+        if (result.first() =='.') result=result.drop(1)
+        if (result.last() =='.') result=result.dropLast(1)
+        return this.copy(condition=result)
+    }
+    fun reduceHash()=
+        this.reduceFirstHash().reduceLastHash()
+
+    private fun reduceFirstHash(): Record {
+        if (this.condition.first() !='#') return this
+        return Record(condition.drop(1),groups.reduceFirstGroup())
+    }
+
+    private fun reduceLastHash(): Record {
+        if (this.condition.last() !='#') return this
+        return Record(condition.dropLast(1),groups.reduceLastGroup())
     }
 }
+
 fun matches(regExStr: String) =
     regExStr.toRegex()
 
@@ -32,9 +50,13 @@ fun <T, R> memoize(function: (T) -> R): (T) -> R {
         cache.getOrPut(input) { function(input) }
     }
 }
-fun getArrangements(_record: Record):Long {
-    if (_record.condition.isFinal()) return  1
-    val record = _record.reduce()
+
+fun getArrangements(record: Record):Long {
+    if (record.condition.isFinal()) return  1
+    if (record.canBeReduced()){
+        return reduceAndGetArrangements(record)
+    }
+
     val options = record.condition.options()
     val matchedRecords =
         options
@@ -47,6 +69,10 @@ fun getArrangements(_record: Record):Long {
     return result
 }
 
+fun reduceAndGetArrangements(record: Record): Long {
+    val recordReduced = record.reduceDot().reduceHash()
+    return getArrangements(recordReduced)
+}
 
 
 fun patternRegex(groups: Groups): Regex =
