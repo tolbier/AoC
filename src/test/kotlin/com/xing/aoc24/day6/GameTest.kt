@@ -44,21 +44,21 @@ class GameTest {
 
     @Test
     fun playReturnsMaze() {
-        println(games[0].play().draw())
+        println(games[0].playP1().draw())
         assertEquals(
             """
                 ....#.....
-                ....XXXXX#
-                ....X...X.
-                ..#.X...X.
-                ..XXXXX#X.
-                ..X.X.X.X.
-                .#XXXXXXX.
-                .XXXXXXX#.
-                #XXXXXXX..
-                ......#X..
+                ....EEEES#
+                ....N...S.
+                ..#.N...S.
+                ..EEEES#S.
+                ..N.N.S.S.
+                .#NWWWSWW.
+                .EEEEEES#.
+                #NWWWWWS..
+                ......#S..
             """.buildMaze(),
-            games[0].play()
+            games[0].playP1()
         )
     }
 

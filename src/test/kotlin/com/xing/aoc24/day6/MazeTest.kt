@@ -109,12 +109,12 @@ class MazeTest {
                 ..#.......
                 .......#..
                 ..........
-                .#..X.....
+                .#..N.....
                 ........#.
                 #.........
                 ......#...
             """.buildMaze(),
-            mazes[0].setVisited(Coords(4, 6))
+            mazes[0].setVisited(Guard(Direction.NORTH, Coords(4, 6)))
         )
     }
 
@@ -166,7 +166,7 @@ class MazeTest {
                 ..#.......
                 .......#..
                 ....^.....
-                .#..X.....
+                .#..N.....
                 ........#.
                 #.........
                 ......#...
@@ -222,15 +222,15 @@ class MazeTest {
             41,
             """
                 ....#.....
-                ....XXXXX#
-                ....X...X.
-                ..#.X...X.
-                ..XXXXX#X.
-                ..X.X.X.X.
-                .#XXXXXXX.
-                .XXXXXXX#.
-                #XXXXXXX..
-                ......#X..
+                ....EEEES#
+                ....N...S.
+                ..#.N...S.
+                ..EEEES#S.
+                ..N.N.S.S.
+                .#NWWWSWW.
+                .EEEEEES#.
+                #NWWWWWS..
+                ......#S..
             """.buildMaze().countVisited()
         )
     }

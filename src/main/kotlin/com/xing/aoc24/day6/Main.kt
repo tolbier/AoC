@@ -9,7 +9,7 @@ class Kata {
         val maze = getMaze()
         val game = Game(maze)
         println(maze.draw())
-        val resultP1 = game.play()
+        val resultP1 = game.playP1()
 
         println(resultP1.draw())
         println(resultP1.countVisited())

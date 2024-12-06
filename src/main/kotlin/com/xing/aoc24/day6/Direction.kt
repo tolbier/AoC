@@ -29,8 +29,17 @@ enum class Direction(val char: Char) {
 
     abstract fun goStep(coords: Coords): Coords
     abstract fun turn(): Direction
+    fun getBreadcrumb(): Cell {
+        return when (this) {
+            WEST -> 'W'
+            NORTH -> 'N'
+            SOUTH -> 'S'
+            EAST -> 'E'
+        }
+    }
 
     companion object {
+        const val BREADCRUMBS: String = "NWSE"
         fun fromCell(char: Char): Direction {
             return values().find { it.char == char } ?: Direction.NORTH
         }

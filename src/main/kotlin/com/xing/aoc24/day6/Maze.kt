@@ -28,7 +28,7 @@ fun Maze.goStep(): Maze {
     return if (guard.nextIsBlock(this)) {
         setGuard(guard.turn())
     } else {
-        setVisited(guard.coords).setGuard(guard.moveNext())
+        setVisited(guard).setGuard(guard.moveNext())
     }
 }
 
@@ -37,7 +37,7 @@ fun Maze.getGuard(): Guard {
 }
 
 fun Maze.countVisited() =
-    this.sumOf { it.count { it == 'X' } }
+    this.sumOf { row -> row.count { cell -> cell in Direction.BREADCRUMBS } }
 
 fun Maze.getGuardCoords(): Coords {
     forEachIndexed { y, row ->
@@ -56,8 +56,9 @@ fun Maze.guardCoordsAreOut(guard: Guard): Boolean {
             coords.x >= this.width() || coords.y >= this.height()
 }
 
-fun Maze.setVisited(guardCoords: Coords): Maze =
-    setCell('X', guardCoords)
+fun Maze.setVisited(guard: Guard): Maze =
+    setCell(guard.direction.getBreadcrumb(), guard.coords)
+
 
 fun Maze.noGuard() =
     getGuardCoords() == notFoundCoords
@@ -68,6 +69,11 @@ fun Maze.setGuard(guard: Guard) =
     } else {
         this.setCell(guard.direction.char, guard.coords)
     }
+
+fun Maze.setOfVisited(): Set<Coords> {
+    return setOf()
+
+}
 
 fun Maze.setCell(cell: Cell, coords: Coords): Maze =
     mapIndexed { idx, row ->
