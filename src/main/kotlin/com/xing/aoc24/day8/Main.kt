@@ -1,5 +1,7 @@
 package com.xing.aoc24.day8
 
+import kotlin.reflect.KFunction3
+
 
 fun main() {
     Day8().main()
@@ -11,48 +13,73 @@ class Day8 {
         println(antennas)
         val resultP1 = p1(antennas, size)
         println(resultP1)
-//        val resultP2 = p2(antennas)
-//        println(resultP2)
+        val resultP2 = p2(antennas, size)
+        println(resultP2)
     }
 
     private fun p1(antennas: List<Antenna>, size: Int): Int {
         val frecuencyMap = createFrecuencyMap(antennas)
-        val antinodes: Set<Antinode> = createAntinodesSet(antennas, frecuencyMap, size)
+        val antinodes: List<Antinode> = createAntinodes(antennas, frecuencyMap, size, ::createOneAntiNode)
 
 
         return antinodes.size
     }
 
-    private fun createAntinodesSet(
+    private fun p2(antennas: List<Antenna>, size: Int): Int {
+        val frecuencyMap = createFrecuencyMap(antennas)
+        val antinodes: List<Antinode> = createAntinodes(antennas, frecuencyMap, size, ::createMultiAntiNode)
+
+
+        return antinodes.size
+    }
+
+    private fun createAntinodes(
         antennas: List<Antenna>,
         frecuencyMap: Map<Frecuency, List<Coords>>,
-        size: Int
-    ): Set<Antinode> {
-        /*
-              recorrer la lista de Antennas(ant1) y buscar el resto de coordenadas de  antenas en la misma frecuencia
-                  para cada una (coord2) de las coordenadas de antenas en misma frecuencia (salvo ant1) crear un antinodo
+        size: Int,
+        createAntinodesFunction: KFunction3<Coords, Coords, Int, List<Antinode>>
+    ): List<Antinode> {
 
-              Devolver el conjunto de Antinodes
-               */
 
         val result = antennas.flatMap { ant1 ->
             val otherCoordsOnFrecuency =
                 frecuencyMap.get(ant1.frecuency)!!.filterNot { coords2 -> coords2.equals(ant1.coords) }
-            otherCoordsOnFrecuency.mapNotNull { coords2 ->
-                createAntiNode(ant1.coords, coords2, size)
+            val otherCoords = otherCoordsOnFrecuency.flatMap { coords2 ->
+                val antinodes = createAntinodesFunction(ant1.coords, coords2, size)
+                antinodes
             }
-        }.toSet()
+            otherCoords
+        }.toSet().toList().sortedWith(compareBy<Antinode> { it.coords.y }.thenBy { it.coords.x })
+
         return result
     }
 
-    private fun createAntiNode(coords: Coords, coords2: Coords, size: Int): Antinode? {
+    private fun createOneAntiNode(coords: Coords, coords2: Coords, size: Int): List<Antinode> {
         val offsetX = coords2.x - coords.x
         val offsetY = coords2.y - coords.y
         val antinode = Antinode(Coords(coords2.x + offsetX, coords2.y + offsetY))
-        return antinode.takeIf {
+        return listOfNotNull(antinode.takeIf {
             antinode.coords.x >= 0 && antinode.coords.y >= 0 &&
                     antinode.coords.x < size && antinode.coords.y < size
+        })
+    }
+
+    private fun createMultiAntiNode(coords: Coords, coords2: Coords, size: Int): List<Antinode> {
+        val offsetX = coords2.x - coords.x
+        val offsetY = coords2.y - coords.y
+
+        val result = mutableListOf<Antinode>()
+        var antinodeX = coords.x + offsetX
+        var antinodeY = coords.y + offsetY
+        while (antinodeX >= 0 && antinodeY >= 0 &&
+            antinodeX < size && antinodeY < size
+        ) {
+            val antinode = Antinode(Coords(antinodeX, antinodeY))
+            result.add(antinode)
+            antinodeX += offsetX
+            antinodeY += offsetY
         }
+        return result
     }
 
     private fun createFrecuencyMap(antennas: List<Antenna>): Map<Frecuency, List<Coords>> =
