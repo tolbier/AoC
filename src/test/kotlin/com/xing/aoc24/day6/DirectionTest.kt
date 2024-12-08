@@ -9,29 +9,6 @@ class DirectionTest {
     fun setUp() {
     }
 
-    @Test
-    fun goStepNorth() {
-        val coords = Direction.NORTH.goStep(Coords(1, 2))
-        assertEquals(Coords(1, 1), coords)
-    }
-
-    @Test
-    fun goStepEast() {
-        val coords = Direction.EAST.goStep(Coords(1, 2))
-        assertEquals(Coords(2, 2), coords)
-    }
-
-    @Test
-    fun goStepSouth() {
-        val coords = Direction.SOUTH.goStep(Coords(1, 2))
-        assertEquals(Coords(1, 3), coords)
-    }
-
-    @Test
-    fun goStepWest() {
-        val coords = Direction.WEST.goStep(Coords(1, 2))
-        assertEquals(Coords(0, 2), coords)
-    }
 
     @Test
     fun turn() {

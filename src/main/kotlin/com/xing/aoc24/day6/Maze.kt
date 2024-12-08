@@ -1,85 +1,87 @@
 package com.xing.aoc24.day6
 
 
-typealias Maze = List<Row>
+data class Maze(val board: Board, val guard: Guard?) {
 
-fun String.buildMaze(): Maze =
-    this.trimIndent().split("\n")
+    constructor(rawBoard: RawBoard) :
+            this(Board(rawBoard.removeGuard()), Guard.fromRawBoard(rawBoard))
 
-fun Maze.draw(): String {
-    val result = fold("") { acc, row ->
-        acc + (if (acc != "") "\n" else "") + row
+
+    fun draw(): String = board.draw().injectDrawGuard(guard)
+
+    fun noGuard(): Boolean = guard == null
+
+    fun getCell(coords: Coords): Cell = board.getCell(coords)
+    fun guardNextIsBlock() = guard?.let { getCell(guard.nextCoords()) == '#' } ?: false
+    fun countVisited() = board.countVisited()
+
+    fun setGuard(guard: Guard): Maze {
+        if (guard.direction.repeatedCell(getCell(guard.coords))) {
+            throw CycleException()
+        }
+        return if (board.coordsAreOut(guard.coords)) {
+            copy(guard = null)
+        } else {
+            copy(guard = guard)
+        }
     }
+
+    fun setCell(cell: Cell, coords: Coords) =
+        Maze(board.setCell(cell, coords), guard)
+
+    fun goStep(): Maze {
+        if (guard == null) return this
+        return if (guardNextIsBlock()) {
+            setGuard(guard.turn())
+        } else {
+//            // before move, if nextCoords visited is the
+//            // same letter of the guard direction
+//            // then end search , and add a cycle
+//            // launch exception? maybek
+
+            setVisited(guard).setGuard(guard.moveNext())
+        }
+    }
+
+    fun goSteps(debug: Boolean = false): Maze {
+        if (noGuard()) return this
+        if (debug) {
+            println()
+            println()
+            println()
+            println(draw())
+        }
+        return goStep().goSteps()
+    }
+
+    fun setVisited(guard: Guard): Maze {
+        val guardCoords = guard.coords
+        val oldCell = getCell(guardCoords)
+
+        return setCell(guard.direction.getBreadcrumb(oldCell), guardCoords)
+    }
+
+    fun setOfVisited(): Set<Coords> = board.setOfVisited()
+}
+
+private fun String.injectDrawGuard(guard: Guard?): String {
+    if (guard == null) return this
+    return rows()
+        .mapIndexed { y, row ->
+            row.mapIndexed { x, cell ->
+                if (Coords(x, y) == guard.coords) {
+                    guard.direction.char
+                } else {
+                    cell
+                }
+            }.joinToString("")
+        }.joinToString(separator = "\n")
+}
+
+private fun String.removeGuard(): String {
+    val result = this.replace("[\\^v><]".toRegex(), ".")
     return result
 }
 
-fun Maze.getGuardDirection(): Direction {
-    val guardCoords = getGuardCoords()
-    val guardCell = this.getCell(guardCoords)
-    return Direction.fromCell(guardCell)
-}
-
-fun Maze.getCell(coords: Coords): Cell =
-    this.getOrElse(coords.y) { Row() }.getOrElse(coords.x) { ' ' }
-
-fun Maze.goStep(): Maze {
-    val guard = getGuard()
-
-    return if (guard.nextIsBlock(this)) {
-        setGuard(guard.turn())
-    } else {
-        setVisited(guard).setGuard(guard.moveNext())
-    }
-}
-
-fun Maze.getGuard(): Guard {
-    return Guard(getGuardDirection(), getGuardCoords())
-}
-
-fun Maze.countVisited() =
-    this.sumOf { row -> row.count { cell -> cell in Direction.BREADCRUMBS } }
-
-fun Maze.getGuardCoords(): Coords {
-    forEachIndexed { y, row ->
-        val x = row.indexOfFirst { "^>v<".contains(it) }
-        if (x > -1) return Coords(x, y)
-    }
-    return notFoundCoords
-}
-
-fun Maze.width() = this[0].length
-fun Maze.height() = this.size
-
-fun Maze.guardCoordsAreOut(guard: Guard): Boolean {
-    val coords = guard.coords
-    return coords.x < 0 || coords.y < 0 ||
-            coords.x >= this.width() || coords.y >= this.height()
-}
-
-fun Maze.setVisited(guard: Guard): Maze =
-    setCell(guard.direction.getBreadcrumb(), guard.coords)
 
 
-fun Maze.noGuard() =
-    getGuardCoords() == notFoundCoords
-
-fun Maze.setGuard(guard: Guard) =
-    if (guardCoordsAreOut(guard)) {
-        this
-    } else {
-        this.setCell(guard.direction.char, guard.coords)
-    }
-
-fun Maze.setOfVisited(): Set<Coords> {
-    return setOf()
-
-}
-
-fun Maze.setCell(cell: Cell, coords: Coords): Maze =
-    mapIndexed { idx, row ->
-        if (idx == coords.y) {
-            row.replaceAt(coords.x, cell)
-        } else {
-            row
-        }
-    }

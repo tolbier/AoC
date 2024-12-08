@@ -26,5 +26,12 @@ class GuardTest {
         assertEquals(Coords(4, 3), guards[3].nextCoords())
     }
 
+    @Test
+    fun turn() {
+        assertEquals(Guard(Direction.EAST, Coords(4, 6)), guards[0].turn())
+        assertEquals(Guard(Direction.SOUTH, Coords(5, 3)), guards[1].turn())
+        assertEquals(Guard(Direction.WEST, Coords(5, 3)), guards[2].turn())
+        assertEquals(Guard(Direction.NORTH, Coords(5, 3)), guards[3].turn())
+    }
 
 }

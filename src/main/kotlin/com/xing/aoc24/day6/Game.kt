@@ -1,10 +1,14 @@
 package com.xing.aoc24.day6
 
 class Game(val maze: Maze) {
-    fun playP1(): Maze =
-        goSteps(maze)
+    fun playP1(): Int {
+        val lastMaze = maze.goSteps()
+        println(lastMaze.draw())
+        return lastMaze.countVisited()
+    }
 
-    fun playP2() {
+
+    fun playP2(): Int {
         /*
         Execute the go Steps
         retrieve a Set A of the VisitedCoords
@@ -18,14 +22,34 @@ class Game(val maze: Maze) {
           if guard enters a cell which has the same breadcrumb of the guarddirection
           then it is a loop
         */
-        val initialMaze = goSteps(maze)
-        val visitedSet = initialMaze.setOfVisited()
-    }
+        val initialMaze = maze.goSteps()
+        val visitedCells = initialMaze.setOfVisited().toList()
 
-    private fun goSteps(maze: Maze): Maze {
-        if (maze.noGuard()) return maze
-        return goSteps(maze.goStep())
+        val result = visitedCells.map { obstacleCoords ->
+            maze.setCell('#', obstacleCoords)
+        }.foldIndexed(0) { idx, acc, mazeWithObstacle ->
+            println(idx)
+            try {
+                mazeWithObstacle.goSteps()
+                acc
+            } catch (ce: CycleException) {
+                acc + 1
+            }
+        }
+        return result
     }
+//
+//    //    private fun goSteps(maze: Maze, debug: Boolean = false): Maze {
+////
+////        if (debug) {
+////            println()
+////            println()
+////            println()
+////            println(maze.draw())
+////        }
+////        if (maze.noGuard()) return maze
+////        return goSteps(maze.goStep(), debug)
+////    }
 
 
 }
