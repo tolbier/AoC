@@ -15,11 +15,11 @@ class Day10 {
         println(resultP2)
     }
 
-    private fun p1(map: Map): Int =
-        map.getSumOfScores()
+    private fun p1(coordMap: CoordMap): Int =
+        coordMap.getSumOfScores()
 
-    private fun p2(map: Map): Int =
-        map.getSumOfRatings()
+    private fun p2(coordMap: CoordMap): Int =
+        coordMap.getSumOfRatings()
 
 
 //    private fun p2(diskMap: List<Int>): BigInteger {
@@ -30,20 +30,15 @@ class Day10 {
 //    }
 
 
-    private fun getMap(): Map {
+    private fun getMap(): CoordMap {
         val fileName = "/com/xing/aoc24/day10/input.txt"
         return try {
             val reader = Day10::class.java.getResourceAsStream(fileName)?.bufferedReader()
-            val result = reader!!.use {
-                reader.lineSequence()
-                    .map { line ->
-                        line.toList().map { it.toString().toInt() }
-                    }.toList()
-            }
-            result
+            val text = reader!!.readText()
+            buildCoordMap(text)
         } catch (e: Exception) {
             println("An error occurred: ${e.message}")
-            listOf()
+            mapOf()
         }
     }
 

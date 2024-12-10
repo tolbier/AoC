@@ -4,19 +4,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class MapTest {
+class CoordMapTest {
 
-
-    fun buildMap(rawMap: String): Map =
-        rawMap.trimIndent().split("\n").map { line ->
-            line.toList().map {
-                try {
-                    it.toString().toInt()
-                } catch (e: Exception) {
-                    null
-                }
-            }
-        }
 
     val rawMaps1: List<String> = listOf(
         """
@@ -90,7 +79,6 @@ class MapTest {
             345678
             4.6789
             56789.
-
         """,
         """
         89010123
@@ -106,10 +94,10 @@ class MapTest {
     )
 
     val maps1 = rawMaps1.map { rawMap1 ->
-        buildMap(rawMap1)
+        buildCoordMap(rawMap1)
     }
     val maps2 = rawMaps2.map { rawMap1 ->
-        buildMap(rawMap1)
+        buildCoordMap(rawMap1)
     }
 
     @BeforeEach
