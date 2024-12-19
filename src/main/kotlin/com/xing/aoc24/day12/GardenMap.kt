@@ -14,9 +14,17 @@ data class GardenMap(val map: Map<Coords, Plot> = emptyMap()) {
 
     fun getSumOfPerimeterCosts(): Int {
         return getRegions().sumOf { region ->
-            val perimeter = region.perimeter(this)
+            val perimeter = region.perimeter()
             val area = region.area()
             area * perimeter
+        }
+    }
+
+    fun getSumOfSidesCosts(): Int {
+        return getRegions().sumOf { region ->
+            val numberOfSides = region.numberOfSides()
+            val area = region.area()
+            area * numberOfSides
         }
     }
 
@@ -43,9 +51,6 @@ data class GardenMap(val map: Map<Coords, Plot> = emptyMap()) {
         }.filter { region -> region.isNotEmpty() }.toSet()
     }
 
-
     fun getPlot(coords: Coords) =
         map[coords]
-
-
 }

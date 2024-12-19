@@ -30,6 +30,28 @@ class GardenMapTest {
         MIIIIIJJEE
         MIIISIJEEE
         MMMISSJEEE
+        """,
+        """
+            OOOOO
+            OXOXO
+            OOOOO
+            OXOXO
+            OOOOO
+        """,
+        """
+            EEEEE
+            EXXXX
+            EEEEE
+            EXXXX
+            EEEEE
+        """,
+        """
+            AAAAAA
+            AAABBA
+            AAABBA
+            ABBAAA
+            ABBAAA
+            AAAAAA
         """
     )
 
@@ -112,7 +134,17 @@ class GardenMapTest {
         val gardenMap1 = GardenMap(rawMazes[1])
         val gardenMap2 = GardenMap(rawMazes[2])
 
-//        assertEquals(140, gardenMap1.getSumOfPerimeterCosts())
+        assertEquals(140, gardenMap1.getSumOfPerimeterCosts())
         assertEquals(1930, gardenMap2.getSumOfPerimeterCosts())
+    }
+
+    @Test
+    fun getSumOfSidesCosts() {
+        assertEquals(36, GardenMap(rawMazes[0]).getSumOfSidesCosts())
+        assertEquals(80, GardenMap(rawMazes[1]).getSumOfSidesCosts())
+        assertEquals(1206, GardenMap(rawMazes[2]).getSumOfSidesCosts())
+        assertEquals(436, GardenMap(rawMazes[3]).getSumOfSidesCosts())
+        assertEquals(236, GardenMap(rawMazes[4]).getSumOfSidesCosts())
+        assertEquals(368, GardenMap(rawMazes[5]).getSumOfSidesCosts())
     }
 }
