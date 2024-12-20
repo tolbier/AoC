@@ -11,12 +11,20 @@ class Day13 {
         println(machines)
         val resultP1 = p1(machines)
         println(resultP1)
+        val resultP2 = p2(machines)
+        println(resultP2)
 //        val resultP2 = p2(gardenMap)
 //        println(resultP2)
     }
 
-    private fun p1(machines: List<Machine>): Int =
+    private fun p1(machines: List<Machine>): Long =
         machines.mapNotNull { it.cost() }.sum()
+
+    private fun p2(machines: List<Machine>): Long {
+        val extra = 10000000000000L
+        return machines.map { it.copy(prizeX = it.prizeX + extra, prizeY = it.prizeY + extra) }.mapNotNull { it.cost() }
+            .sum()
+    }
 
 //    private fun p2(gardenMap: GardenMap): Int =
 //        gardenMap.getSumOfSidesCosts()
@@ -46,8 +54,8 @@ fun buildMachines(rawMachines: String): List<Machine> {
             aY = match.groups[2]!!.value.toInt(),
             bX = match.groups[3]!!.value.toInt(),
             bY = match.groups[4]!!.value.toInt(),
-            prizeX = match.groups[5]!!.value.toInt(),
-            prizeY = match.groups[6]!!.value.toInt(),
+            prizeX = match.groups[5]!!.value.toLong(),
+            prizeY = match.groups[6]!!.value.toLong(),
         )
     }.toList()
 }
