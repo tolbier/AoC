@@ -13,5 +13,26 @@ data class Space(val width: Int = 0, val height: Int = 0, val robots: List<Robot
     fun predict(seconds: Int) =
         copy(robots = robots.map { it.predict(seconds, width, height) })
 
+    fun robotsMap(): Map<Coords, List<Robot>> = robots.groupBy { it.coords }
+    fun draw(idx: Int) {
+        var result = ""
+        val robotsMap = robotsMap()
+        (0..<height).forEach { y ->
+            (0..<width).forEach { x ->
+                if (robotsMap.containsKey(Coords(x, y))) {
+                    result += "*"
+                } else {
+                    result += " "
+                }
+
+            }
+            result += "\n"
+        }
+        if ("*********" in result) {
+            print(idx)
+            println(result)
+            println("--------------------------------")
+        }
+    }
 }
 

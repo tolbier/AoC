@@ -11,13 +11,18 @@ class Day14 {
         println(space)
         val resultP1 = p1(space)
         println(resultP1)
-//        val resultP2 = p2(machines)
-//        println(resultP2)
+        p2(space)
 
     }
 
     private fun p1(space: Space): Long =
         space.predict(100).safetyFactor()
+
+    private fun p2(space: Space) {
+        (0..<50000).forEach {
+            space.predict(it).draw(it)
+        }
+    }
 
 
     private fun getSpace(): Space {
