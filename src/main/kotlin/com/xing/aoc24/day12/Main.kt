@@ -2,10 +2,10 @@ package com.xing.aoc24.day12
 
 
 fun main() {
-    Day16().main()
+    Day12().main()
 }
 
-class Day16 {
+class Day12 {
     fun main() {
         val gardenMap = getGardenMap()
         println(gardenMap)
@@ -24,7 +24,7 @@ class Day16 {
     private fun getGardenMap(): GardenMap {
         val fileName = "/com/xing/aoc24/day12/input.txt"
         try {
-            val reader = Day16::class.java.getResourceAsStream(fileName)?.bufferedReader()
+            val reader = Day12::class.java.getResourceAsStream(fileName)?.bufferedReader()
             val rawMap = reader!!.readText()
             return GardenMap(rawMap)
         } catch (e: Exception) {
