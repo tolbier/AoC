@@ -13,8 +13,7 @@ class Day13 {
         println(resultP1)
         val resultP2 = p2(machines)
         println(resultP2)
-//        val resultP2 = p2(gardenMap)
-//        println(resultP2)
+
     }
 
     private fun p1(machines: List<Machine>): Long =
@@ -25,9 +24,6 @@ class Day13 {
         return machines.map { it.copy(prizeX = it.prizeX + extra, prizeY = it.prizeY + extra) }.mapNotNull { it.cost() }
             .sum()
     }
-
-//    private fun p2(gardenMap: GardenMap): Int =
-//        gardenMap.getSumOfSidesCosts()
 
     private fun getMachines(): List<Machine> {
         val fileName = "/com/xing/aoc24/day13/input.txt"
@@ -40,8 +36,6 @@ class Day13 {
             return emptyList()
         }
     }
-
-
 }
 
 fun buildMachines(rawMachines: String): List<Machine> {
