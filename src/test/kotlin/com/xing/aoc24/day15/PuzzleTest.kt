@@ -14,7 +14,8 @@ class PuzzleTest {
             #...O..#
             #......#
             ########
-        """, """
+        """,
+        """
             ##########
             #..O..O.O#
             #......O.#
@@ -25,6 +26,44 @@ class PuzzleTest {
             #.OO.O.OO#
             #....O...#
             ##########
+        """,
+        """
+            #######
+            #...#.#
+            #.....#
+            #..OO@#
+            #..O..#
+            #.....#
+            #######
+        """,
+        """
+            ##############
+            ##...[].##..##
+            ##...@.[]...##
+            ##....[]....##
+            ##..........##
+            ##..........##
+            ##############
+        """,
+        """
+            #######
+            #...#.#
+            #.....#
+            #..O@O#
+            #..O#.#
+            #.....#
+            #######
+        """,
+        """
+            ##############
+            ##.....##...##
+            ##......#...##
+            ##..[][]....##
+            ##...[].....##
+            ##[][]@[]...##
+            ##...[].....##
+            ##..........##
+            ##############
         """
     )
     val expectedRawPuzzles: List<String> = listOf(
@@ -48,86 +87,123 @@ class PuzzleTest {
     #O.....OO#
     #OO....OO#
     ##########
+        """, """
+            #######
+            #@..#.#
+            #.O...#
+            #..O..#
+            #..O..#
+            #.....#
+            #######
         """
     )
 
-    val rawMovements: List<String> = listOf(
-        "<^^>>>vv<v>>v<<",
-        """
-            <vv>^<v^>v>^vv^v>v<>v^v<v<^vv<<<^><<><>>v<vvv<>^v^>^<<<><<v<<<v^vv^v>^
-            vvv<<^>^v^^><<>>><>^<<><^vv^^<>vvv<>><^^v>^>vv<>v<<<<v<^v>^<^^>>>^<v<v
-            ><>vv>v^v^<>><>>>><^^>vv>v<^^^>>v^v^<^^>v^^>v^<^v>v<>>v^v^<v>v^^<^^vv<
-            <<v<^>>^^^^>>>v^<>vvv^><v<<<>^^^vv^<vvv>^>v<^^^^v<>^>vvvv><>>v^<<^^^^^
-            ^><^><>>><>^^<<^^v>>><^<v>^<vv>>v>>>^v><>^v><<<<v>>v<v<v>vvv>^<><<>^><
-            ^>><>^v<><^vvv<^^<><v<<<<<><^v<<<><<<^^<v<^^^><^>>^<v^><<<^>>^v<v^v<v^
-            >^>>^v>vv>^<<^v<>><<><<v<<v><>v<^vv<<<>^^v^>^^>>><<^v>>v^v><^^>>^<>vv^
-            <><^^>^^^<><vvvvv^v<v<<>^v<v>v<<^><<><<><<<^^<<<^<<>><<><^^^>^^<>^>v<>
-            ^^>vv<^v^v<vv>^<><v<^v>^^^>>>^^vvv^>vvv<>>>^<^>>>>>^<<^v>^vvv<>^<><<v>
-            v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^
-        """
-    )
-    val puzzles = rawPuzzles.map { it.trimIndent().buildPuzzle() }
-    val movements = rawMovements.map { it.trimIndent().replace("\n", "").buildMovements() }
+    val puzzles = rawPuzzles.map { Puzzle(it.trimIndent()) }
 
     @Test
     fun draw() {
-        assertEquals(rawPuzzles[0].trimIndent(), puzzles[0].draw())
-    }
-
-    @Test
-    fun orderMovements() {
         puzzles.forEachIndexed { idx, puzzle ->
-            assertEquals(
-                expectedRawPuzzles[idx].trimIndent(), puzzle.order(movements[idx]).draw()
-            )
+            assertEquals(rawPuzzles[idx].trimIndent(), puzzle.draw())
         }
     }
 
+
     @Test
-    fun orderMovement() {
+    fun robotMove() {
+        assertEquals(
+            Puzzle(
+                """
+            #######
+            #...#.#
+            #...@.#
+            #..O.O#
+            #..O#.#
+            #.....#
+            #######
+        """
+            ), puzzles[4].moveRobot(Movement.NORTH)
+        )
+        assertEquals(puzzles[4], puzzles[4].moveRobot(Movement.EAST))
+        assertEquals(puzzles[4], puzzles[4].moveRobot(Movement.SOUTH))
+        assertEquals(
+
+            """
+            #######
+            #...#.#
+            #.....#
+            #.O@.O#
+            #..O#.#
+            #.....#
+            #######
+        """.trimIndent(), puzzles[4].moveRobot(Movement.WEST).draw()
+        )
+
         assertEquals(
             """
-            ########
-            #..O.O.#
-            ##..O..#
-            #.@.O..#
-            #.#.O..#
-            #...O..#
-            #......#
-            ########
-        """.trimIndent(), puzzles[0].order(Movement.SOUTH).draw()
-        )
-        assertEquals(
-            rawPuzzles[0].trimIndent(), puzzles[0].order(Movement.WEST).draw()
-        )
-        assertEquals(
-            """
-            ########
-            #.@O.O.#
-            ##..O..#
-            #...O..#
-            #.#.O..#
-            #...O..#
-            #......#
-            ########
-        """.trimIndent(), puzzles[0].order(Movement.NORTH).draw()
+            ##############
+            ##.....##...##
+            ##..[][]#...##
+            ##...[].....##
+            ##....@.....##
+            ##[][].[]...##
+            ##...[].....##
+            ##..........##
+            ##############
+        """.trimIndent(), puzzles[5].moveRobot(Movement.NORTH).draw()
         )
         assertEquals(
             """
-            ########
-            #..@OO.#
-            ##..O..#
-            #...O..#
-            #.#.O..#
-            #...O..#
-            #......#
-            ########
-        """.trimIndent(),
-            puzzles[0]
-                .order(Movement.NORTH)
-                .order(Movement.EAST)
-                .draw()
+            ##############
+            ##.....##...##
+            ##..[][]#...##
+            ##...[].....##
+            ##....@.....##
+            ##[][].[]...##
+            ##...[].....##
+            ##..........##
+            ##############
+        """.trimIndent(), puzzles[5].moveRobot(Movement.NORTH).moveRobot(Movement.NORTH).draw()
         )
+        assertEquals(
+            """
+                    ##############
+                    ##.....##...##
+                    ##......#...##
+                    ##..[][]....##
+                    ##...[].....##
+                    ##[][].@[]..##
+                    ##...[].....##
+                    ##..........##
+                    ##############
+        """.trimIndent(), puzzles[5].moveRobot(Movement.EAST).draw()
+        )
+        assertEquals(
+            """
+                    ##############
+                    ##.....##...##
+                    ##......#...##
+                    ##..[][]....##
+                    ##...[].....##
+                    ##[][].[]...##
+                    ##....@.....##
+                    ##...[].....##
+                    ##############
+        """.trimIndent(), puzzles[5].moveRobot(Movement.SOUTH).draw()
+        )
+        assertEquals(
+            """
+                    ##############
+                    ##.....##...##
+                    ##......#...##
+                    ##..[][]....##
+                    ##...[].....##
+                    ##[][]@[]...##
+                    ##...[].....##
+                    ##..........##
+                    ##############
+        """.trimIndent(), puzzles[5].moveRobot(Movement.WEST).draw()
+        )
+
     }
 
     @Test
@@ -151,6 +227,26 @@ class PuzzleTest {
              ##..........##
              ##############
         """.trimIndent(), puzzle.wider()
+        )
+    }
+
+    @Test
+    fun sumAllBoxesGPSCoords() {
+        assertEquals(
+            9021L, Puzzle(
+                """
+            ####################
+            ##[].......[].[][]##
+            ##[]...........[].##
+            ##[]........[][][]##
+            ##[]......[]....[]##
+            ##..##......[]....##
+            ##..[]............##
+            ##..@......[].[][]##
+            ##......[][]..[]..##
+            ####################
+        """
+            ).sumAllBoxesGPSCoords()
         )
     }
 }

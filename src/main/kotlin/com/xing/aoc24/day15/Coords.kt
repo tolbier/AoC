@@ -6,7 +6,6 @@ data class Coords(val x: Int = -1, val y: Int = -1) {
     fun right() = Coords(x + 1, y)
     fun up() = Coords(x, y - 1)
     fun down() = Coords(x, y + 1)
-
     fun next(movement: Movement): Coords =
         when (movement) {
             Movement.SOUTH -> down()
@@ -14,6 +13,7 @@ data class Coords(val x: Int = -1, val y: Int = -1) {
             Movement.EAST -> right()
             Movement.WEST -> left()
         }
+
 
     fun gpsCoords(): Long =
         100L * y + x

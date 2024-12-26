@@ -1,11 +1,7 @@
 package com.xing.aoc24.day15
 
 enum class CellType(val char: Char) {
-    WALL('#'), EMPTY('.'), BOX('O');
+    WALL('#'), EMPTY('.'), BOX('O'), BOX_L('['), BOX_R(']'), ROBOT('@');
 
-    companion object {
-        fun fromChar(char: Char): CellType {
-            return CellType.entries.find { it.char == char }!!
-        }
-    }
+
 }

@@ -1,5 +1,6 @@
 package com.xing.aoc24.day15
 
+
 fun main() {
     Day15().main()
 }
@@ -7,27 +8,21 @@ fun main() {
 class Day15 {
     fun main() {
         val (puzzle, movements) = gePuzzleAndMovements()
-        println(puzzle)
-        println(movements)
-        val resultP1 = p1(puzzle, movements)
+        val widerPuzzle = Puzzle(puzzle.draw().wider())
+//        println(puzzle)
+//        println(movements)
+        val game = Game(puzzle, movements)
+//        println(game.draw())
+        val resultP1 = p1(game)
         println(resultP1)
-//       val resultP2 = p2(updates,rules)
-//       println(resultP2)
+        val widerGame = Game(widerPuzzle, movements)
+        val resultP2 = p1(widerGame)
+        println(resultP2)
     }
 
-    private fun p1(puzzle: Puzzle, movements: List<Movement>): Long {
-        return puzzle.order(movements).sumAllBoxesGPSCoords()
+    private fun p1(game: Game): Long {
+        return game.playAndSumAllBoxesGPSCoords()
     }
-
-//    private fun p1(updates: Updates, rules: Rules): Int {
-//        val sumOfMiddleCorrectUpdates= updates.getSumofMiddleCorrectUpdates(rules)
-//        return sumOfMiddleCorrectUpdates
-//    }
-//    private fun p2(updates: Updates, rules: Rules): Int {
-//        val sumOfMiddleWrongAndSortedUpdates= updates.getSumofMiddleWrongAndSortedUpdates(rules)
-//        return sumOfMiddleWrongAndSortedUpdates
-//
-//    }
 
     private fun gePuzzleAndMovements(): Pair<Puzzle, List<Movement>> {
         val fileName = "/com/xing/aoc24/day15/input.txt"

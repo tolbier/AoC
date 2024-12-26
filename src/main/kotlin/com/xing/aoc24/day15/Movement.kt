@@ -11,6 +11,9 @@ enum class Movement(val char: Char) {
     WEST('<') {
     };
 
+    fun isHorizontal() = this in listOf(WEST, EAST)
+    fun isVertical() = !isHorizontal()
+
     companion object {
         fun fromChar(char: Char): Movement {
             return entries.find { it.char == char }!!
