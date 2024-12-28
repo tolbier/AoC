@@ -102,11 +102,10 @@ data class Puzzle(
                 val newScore = scores[currentReindeer]!! + neighborScore.score
 
                 if (newScore <= scores[neighborReindeer]!!) {
-                    if ((newScore < scores[neighborReindeer]!!)) {
-                        previous[neighborReindeer] = setOf(currentReindeer)
-                    } else {
-                        previous[neighborReindeer] = (previous[neighborReindeer] ?: emptySet()).plus(currentReindeer)
-                    }
+                    previous[neighborReindeer] = setOf(currentReindeer).plus(
+                        previous[neighborReindeer].takeIf { newScore == scores[neighborReindeer] } ?: emptySet()
+                    )
+
                     if (newScore < scores[neighborReindeer]!!) {
                         scores[neighborReindeer] = newScore
                         heap.add(ReindeerScore(neighborReindeer, newScore))
