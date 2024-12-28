@@ -67,17 +67,26 @@ data class Puzzle(
             }
         }.toMap().toMutableMap()
 
-    fun lowestScore(): Long {
-        val dijkstraResult = dijkstra()
-        val scoresMap = dijkstraResult.first
-        return Direction.entries.minOf { direction ->
-            scoresMap[Reindeer(exit, direction)] ?: Score.MAX_VALUE
+    fun lowestScore(): Score =
+        dijkstra().lowestRendeerScore()[0]!!.score
+
+    fun DijkstraResult.lowestRendeerScore(): List<ReindeerScore> {
+        val scores = this.scores
+        val reindeerScores = Direction.entries.map { direction ->
+            val reindeer = Reindeer(exit, direction)
+            ReindeerScore(reindeer, scores.get(reindeer)!!)
+        }
+        val minScore = reindeerScores.minOf { it.score }
+        return reindeerScores.filter {
+            it.score == minScore
         }
     }
 
-    fun dijkstra(): Pair<Map<Reindeer, Score>, Map<Reindeer, Reindeer>> {
+    data class DijkstraResult(val scores: Map<Reindeer, Score>, val pathMap: Map<Reindeer, Set<Reindeer>>)
+
+    fun dijkstra(): DijkstraResult {
         val scores = initScores()
-        val previous = mutableMapOf<Reindeer, Reindeer>()
+        val previous = mutableMapOf<Reindeer, Set<Reindeer>>()
         val visited = mutableSetOf<Reindeer>()
         scores[start] = 0L
         val heap = PriorityQueue<ReindeerScore>()
@@ -91,14 +100,21 @@ data class Puzzle(
             getNeighborScores(currentReindeer).forEach { neighborScore ->
                 val neighborReindeer = neighborScore.reindeer
                 val newScore = scores[currentReindeer]!! + neighborScore.score
-                if (newScore < scores[neighborReindeer]!!) {
-                    scores[neighborReindeer] = newScore
-                    previous[neighborReindeer] = currentReindeer
-                    heap.add(ReindeerScore(neighborReindeer, newScore))
+
+                if (newScore <= scores[neighborReindeer]!!) {
+                    if ((newScore < scores[neighborReindeer]!!)) {
+                        previous[neighborReindeer] = setOf(currentReindeer)
+                    } else {
+                        previous[neighborReindeer] = (previous[neighborReindeer] ?: emptySet()).plus(currentReindeer)
+                    }
+                    if (newScore < scores[neighborReindeer]!!) {
+                        scores[neighborReindeer] = newScore
+                        heap.add(ReindeerScore(neighborReindeer, newScore))
+                    }
                 }
             }
         }
-        return Pair(scores, previous)
+        return DijkstraResult(scores, previous)
     }
 
     fun getNeighborScores(fromReindeer: Reindeer): Set<ReindeerScore> {
@@ -113,6 +129,32 @@ data class Puzzle(
         }
         return result
     }
+
+    fun numberOfTilesInPaths(): Int {
+        val dijkstraResult = dijkstra()
+        val lowestReindeerScores = dijkstraResult.lowestRendeerScore()
+        val lowestReindeers = lowestReindeerScores.map { it.reindeer }
+        val pathMap = dijkstraResult.pathMap
+        fun getSetFrom(reindeer: Reindeer, end: Coords, visited: Set<Reindeer>): Set<Reindeer> {
+            if (reindeer == Reindeer(end)) return visited
+
+            val stepsFromReindeer = pathMap[reindeer]!!
+            val nextSet = stepsFromReindeer.filter { it !in visited }
+
+            val result = nextSet.flatMap {
+                getSetFrom(it, end, visited.plus(it))
+            }.toSet()
+            return result
+        }
+
+        val reindeerSet: Set<Reindeer> = lowestReindeers.fold(setOf()) { acc: Set<Reindeer>, reindeer ->
+            acc.plus(getSetFrom(reindeer, start.coords, setOf(reindeer)))
+        }
+        val coordsSet = reindeerSet.map { it.coords }.toSet()
+        return coordsSet.size
+    }
+
+
 }
 
 

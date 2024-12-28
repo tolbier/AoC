@@ -10,7 +10,7 @@ class Day16 {
         val puzzle = getPuzzle()
         println(puzzle)
         println(puzzle.lowestScore())
-
+        println(puzzle.numberOfTilesInPaths())
     }
 
     private fun getPuzzle(): Puzzle {

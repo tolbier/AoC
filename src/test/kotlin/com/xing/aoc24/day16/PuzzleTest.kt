@@ -40,8 +40,17 @@ class PuzzleTest {
         #.#.#.#########.#
         #S#.............#
         #################
+        """,
         """
-    )
+        ######
+        #...E#
+        #.##.#
+        #.##.#
+        #S...#
+        ######
+        """,
+
+        )
 
     val puzzles = rawPuzzles.map { Puzzle(it.trimIndent()) }
 
@@ -56,6 +65,14 @@ class PuzzleTest {
     fun lowestScore() {
         assertEquals(7036L, puzzles[0].lowestScore())
         assertEquals(11048L, puzzles[1].lowestScore())
+        assertEquals(1006L, puzzles[2].lowestScore())
+    }
+
+    @Test
+    fun numberOfTilesInPaths() {
+        assertEquals(45, puzzles[0].numberOfTilesInPaths())
+        assertEquals(64, puzzles[1].numberOfTilesInPaths())
+        assertEquals(7, puzzles[2].numberOfTilesInPaths())
     }
 
 }
