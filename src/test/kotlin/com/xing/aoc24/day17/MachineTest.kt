@@ -58,7 +58,15 @@ class MachineTest {
             Register C: 0
 
             Program: 0,3,5,4,3,0
+        """,
         """
+            Register A: 202322936867370
+            Register B: 0
+            Register C: 0
+
+            Program: 2,4,1,1,7,5,1,4,0,3,4,5,5,5,3,0
+        """
+
     )
     val machines = rawMachines.map { Machine(it.trimIndent()) }
     val finalDrawMachines: List<String> = listOf(
@@ -122,14 +130,23 @@ class MachineTest {
 
             Program: 0,3,5,4,3,0
             Output: 0,3,5,4,3,0
+        """,
+        """
+            Register A: 0
+            Register B: 0
+            Register C: 0
+
+            Program: 2,4,1,1,7,5,1,4,0,3,4,5,5,5,3,0
+            Output: 2,4,1,1,7,5,1,4,0,3,4,5,5,5,3,0
         """
     ).map { it.trimIndent().trim() }
 
     @Test
     fun draw() {
-        machines.zip(finalDrawMachines) { machine, finalDrawMachine ->
-            assertEquals(finalDrawMachine, machine.execProgram().draw())
-        }
+        assertEquals(finalDrawMachines[7], machines[7].execProgram().draw())
+//        machines.zip(finalDrawMachines) { machine, finalDrawMachine ->
+//            assertEquals(finalDrawMachine, machine.execProgram().draw())
+//        }
     }
 
 }

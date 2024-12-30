@@ -10,11 +10,17 @@ class Day17 {
         val machine = getMachine()
         println(machine)
         println(p1(machine))
+        println(p2(machine))
     }
 
     private fun p1(machine: Machine): String =
         machine.execProgram().output()
 
+    private fun p2(machine: Machine): String {
+        val result = machine.decrypt().toString()
+        return result
+    }
+//        machine.execProgram().output()
 //    private fun p2(machines: List<Machine>): Long {
 //        val extra = 10000000000000L
 //        return machines.map { it.copy(prizeX = it.prizeX + extra, prizeY = it.prizeY + extra) }.mapNotNull { it.cost() }

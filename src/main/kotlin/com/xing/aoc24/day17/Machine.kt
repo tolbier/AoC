@@ -7,16 +7,17 @@ data class Machine(
     val regC: Long,
     val program: Program,
     val pointer: Int = 0,
-    val output: List<Long> = emptyList()
-
+    val output: List<Byte> = emptyList(),
+    val noJump: Boolean = false
 ) {
 
     fun instruction() = program[pointer]
     fun next() = this.copy(pointer = pointer + 1)
-    fun jump(n: Int = this.literal().toInt()) = if (regA > 0) this.copy(pointer = n / 2) else this.next()
+    fun jump(n: Int = this.literal().toInt()) = if (regA > 0 && !noJump) this.copy(pointer = n / 2) else this.next()
     fun setA(n: Long) = this.copy(regA = n)
     fun setB(n: Long) = this.copy(regB = n)
     fun setC(n: Long) = this.copy(regC = n)
+    fun noJump() = this.copy(noJump = true)
     fun combo(): Long {
         val operand = instruction().operand
         return when (operand.toInt()) {
@@ -31,7 +32,7 @@ data class Machine(
     fun literal() = instruction().operand
 
     fun outputComboMod8() =
-        this.copy(output = output.plus(combo() and 7))
+        this.copy(output = output.plus((combo() and 7).toByte()))
 
     fun execProgram(): Machine {
         var current = this
@@ -55,6 +56,64 @@ data class Machine(
                        Output: ${output()}
         """.trimIndent().trim()
 
+    fun firstOutput() =
+        output.first()
+
+
+    fun decrypt(): List<Long> {
+        val decryptResult = (0b0L..0b111111111L).flatMap {
+            setA(it).noJump().decryptStep(it, listBytesFromTribit(it))
+        }
+        val result = decryptResult.map { bytes ->
+            val res = bytes.fold(0L) { acc, byte ->
+                (acc shl 3) or byte.toLong()
+            }
+            res
+
+        }.sorted()
+        return result
+    }
+
+    private fun listBytesFromTribit(it: Long) = listOf(
+        it shr 6,
+        (it shr 3) and 7,
+        it and 7
+    ).map { it.toByte() }
+
+
+    private fun decryptStep(previousRegA: Long, prevCodes: List<Byte>, outputPosition: Int = 0): List<List<Byte>> {
+        if (outputPosition == program.size * 2) {
+            return if (previousRegA == 0L) {
+                listOf(prevCodes)
+            } else emptyList()
+
+        }
+
+        val currentRegsA = (0..7).map { it.toByte() }.map { code ->
+            code to ((code.toLong() shl 9) or (previousRegA))
+        }
+        val codesToMachines = currentRegsA.map { (code, regA) ->
+            code to setA(regA).execProgram()
+        }
+
+        val filteredCodesToMachines = codesToMachines.filter { (_, machine) ->
+            machine.firstOutput() == getProgramCodeByPosition(outputPosition)
+        }
+
+        val result = filteredCodesToMachines.fold(emptyList<List<Byte>>()) { acc, (code, machine) ->
+            acc.plus(decryptStep(machine.regA, listOf(code).plus(prevCodes), outputPosition + 1))
+        }
+        return result
+    }
+
+    private fun getProgramCodeByPosition(codePosition: Int): Byte {
+        val instruction = program[codePosition / 2]
+        return if (codePosition % 2 == 0) {
+            instruction.command.opcode
+        } else {
+            instruction.operand
+        }
+    }
 
     constructor(machine: Machine = Machine()) : this(machine.regA, machine.regB, machine.regC, machine.program)
     constructor(rawPuzzle: String) : this(buildMachine(rawPuzzle))
