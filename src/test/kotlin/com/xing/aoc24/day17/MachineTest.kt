@@ -143,10 +143,9 @@ class MachineTest {
 
     @Test
     fun draw() {
-        assertEquals(finalDrawMachines[7], machines[7].execProgram().draw())
-//        machines.zip(finalDrawMachines) { machine, finalDrawMachine ->
-//            assertEquals(finalDrawMachine, machine.execProgram().draw())
-//        }
+        machines.zip(finalDrawMachines) { machine, finalDrawMachine ->
+            assertEquals(finalDrawMachine, machine.execProgram().draw())
+        }
     }
 
 }
