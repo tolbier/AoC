@@ -11,9 +11,8 @@ class Day23 {
         println(network)
         val resultP1 = p1(network)
         println(resultP1)
-
-//        p2(space)
-
+        val resultP2 = p2(network)
+        println(resultP2)
     }
 
     private fun p1(network: Network): Int {
@@ -22,11 +21,10 @@ class Day23 {
         return ttrios.size
     }
 
-//    private fun p2(space: Space) {
-//        (0..<50000).forEach {
-//            space.predict(it).draw(it)
-//        }
-//    }
+    private fun p2(network: Network): String {
+        val lanPartyPassword = network.getLanParty()
+        return lanPartyPassword
+    }
 
 
     private fun getNetwork(): Network {

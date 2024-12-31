@@ -11,6 +11,10 @@ data class Computer(val id: String, val linkedComputers: MutableSet<String> = mu
         linkedComputers.add(other.id)
     }
 
+    fun linkedWith(otherId: String) =
+        linkedComputers.contains(otherId)
+
+
     fun findTrios(network: Network, previousList: List<String> = emptyList()): Set<List<String>> {
         if (previousList.size == 3) {
             return if (previousList.firstOrNull() == id) {
