@@ -53,7 +53,7 @@ class NetworkTest {
 
     @Test
     fun getLanParty() {
-        val lanParty = networks[0].getLanParty().joinToString(",")
+        val lanParty = networks[0].getLanParty()
         assertEquals("co,de,ka,ta", lanParty)
     }
 
