@@ -18,6 +18,23 @@ fun Devices.getDevice(id: String): Device {
 
 }
 
+fun Devices.draw(): String {
+    var result = ""
+    val (bases, gates) = values.partition { it is Device.Base }
+    val basesSorted = bases.sortedBy { it.id }.map { it as Device.Base }
+    basesSorted.forEachIndexed { idx, base ->
+        if (idx > 0) result += "\n"
+        result += "${base.id}: ${"1".takeIf { base.value } ?: "0"}"
+    }
+    result += "\n\n"
+    val gatesSorted = gates.sortedBy { it.id }.map { it as Device.Gate }
+    gatesSorted.forEachIndexed { idx, gate ->
+        result += "${gate.op1Id} ${gate.gateType} ${gate.op2Id} -> ${gate.id}\n"
+    }
+
+    return result
+}
+
 fun buildDevices(rawFile: String): Map<String, Device> {
     val (rawBases, rawGates) = rawFile.split("\n\n")
     val bases: List<Device.Base> = Device.Base.buildBases(rawBases)

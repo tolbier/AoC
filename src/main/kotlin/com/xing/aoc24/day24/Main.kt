@@ -9,17 +9,24 @@ class Day24 {
     fun main() {
         val devices = getDevices()
         println(devices)
-//        println(game.draw())
+
         val resultP1 = p1(devices)
         println(resultP1)
-//        val widerGame = Game(widerPuzzle, movements)
-//        val resultP2 = p1(widerGame)
-//        println(resultP2)
+
+        val resultP2 = p2(devices)
+        println(resultP2)
+
+        ///Find manualy: Solution is "ctg,dmh,dvq,rpb,rpv,z11,z31,z38"
     }
 
     private fun p1(devices: Devices): Long {
 
         return devices.getOutput()
+    }
+
+    private fun p2(devices: Devices): String {
+
+        return devices.draw()
     }
 
     private fun getDevices(): Devices {
