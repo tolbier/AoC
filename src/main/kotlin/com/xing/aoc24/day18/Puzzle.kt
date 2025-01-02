@@ -1,6 +1,5 @@
 package com.xing.aoc24.day18
 
-import com.xing.aoc24.day16.Puzzle.DijkstraResult
 import com.xing.aoc24.day18.CellType.CORRUPTED
 import com.xing.aoc24.day18.CellType.EMPTY
 import java.util.*
@@ -109,5 +108,13 @@ data class Puzzle(
     fun lowestDijkstraScore(): Score {
         val result = dijkstra().lowestExitScore()
         return result
+    }
+
+    fun firstCorruptedByteThatBlockedTheWay(): Coords? {
+        allCorrupted.forEachIndexed() { idx, coords ->
+            val currentPuzzle = copy(fallenBytes = idx + 1)
+            if (currentPuzzle.lowestDijkstraScore() == Score.MAX_VALUE) return coords
+        }
+        return null
     }
 }

@@ -63,4 +63,12 @@ class PuzzleTest {
             assertEquals(expectedLowScores[idx], puzzle.lowestDijkstraScore())
         }
     }
+
+    @Test
+    fun firstCorruptedByteThatBlockedTheWay() {
+        val expectedBlockerCoords = listOf(Coords(6, 1))
+        puzzles.forEachIndexed { idx, puzzle ->
+            assertEquals(expectedBlockerCoords[idx], puzzle.firstCorruptedByteThatBlockedTheWay())
+        }
+    }
 }
