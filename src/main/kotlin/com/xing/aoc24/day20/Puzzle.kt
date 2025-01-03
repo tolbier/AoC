@@ -5,8 +5,8 @@ import java.util.*
 
 data class Puzzle(
     val blocks: List<Coords> = emptyList(),
-    val start: Coords,
-    val exit: Coords
+    val start: Coords = Coords(0, 0),
+    val exit: Coords = Coords(0, 0)
 ) {
     val height = blocks.maxOfOrNull { it.y }?.plus(1) ?: 0
     val width = blocks.maxOfOrNull { it.x }?.plus(1) ?: 0
@@ -60,11 +60,10 @@ data class Puzzle(
     }
 
     private fun initMinPseconds(): MutableMap<Coords, Psecond> =
-        allCoords.associateWith {
+        freeBlocks.associateWith {
             Psecond.MAX_VALUE
         }.toMutableMap()
 
-    data class DijkstraResult(val pseconds: Map<Coords, Psecond>, val pathMap: Map<Coords, Set<Coords>>)
 
     fun getNeighborPseconds(from: CoordsPsecond) =
         from.coords.allNext().filter { next ->
@@ -108,16 +107,53 @@ data class Puzzle(
 
     }
 
-    private fun DijkstraResult.lowestExitPsecond(): Psecond {
-        val scores = this.pseconds
-        val exitScore = scores.get(exit)!!
-        return exitScore
-    }
 
     fun lowestPsecond(): Psecond {
-        val result = dijkstra().lowestExitPsecond()
+        val result = dijkstra().lowestPsecond(exit)
         return result
     }
 
+    fun calculateNumberofCheatsToSavePseconds(): Map<Psecond, Int> {
+        val baseResult = dijkstra()
+        val baseTime = baseResult.lowestPsecond(exit)
+        val mapCoordsAndTimeToExit = baseResult.getMapCoordsAndTime(baseTime)
+        val coordsPsecondsAndCheatList: List<Pair<CoordsPsecond, CoordsPsecond>> =
+            coordsPsecondsAndCheat(mapCoordsAndTimeToExit)
+        val coordsPsecondsAndCheatWithLowestPsecondList: List<Triple<CoordsPsecond, CoordsPsecond, Psecond>> =
+            coordsPsecondsAndCheatWithLowestPsecondList(mapCoordsAndTimeToExit, coordsPsecondsAndCheatList)
+        val savingsList = coordsPsecondsAndCheatWithLowestPsecondList.map {
+            it.second.psecond - it.third
+        }.filter { it > 0 }
+        val result = savingsList.groupBy { it }.mapValues { it.value.size }
+        return result
+    }
+
+    private fun coordsPsecondsAndCheatWithLowestPsecondList(
+        mapCoordsAndTimeToExit: Map<Coords, Int>,
+        coordsPsecondsAndCheatList: List<Pair<CoordsPsecond, CoordsPsecond>>
+    ): List<Triple<CoordsPsecond, CoordsPsecond, Psecond>> {
+        return coordsPsecondsAndCheatList.mapNotNull() { pair ->
+            val psecond = mapCoordsAndTimeToExit[pair.second.coords]
+            psecond?.let { Triple(pair.first, pair.second, psecond) }
+        }
+    }
+
+    private fun coordsPsecondsAndCheat(mapCoordsAndTimeToExit: Map<Coords, Int>): List<Pair<CoordsPsecond, CoordsPsecond>> {
+        val result = mapCoordsAndTimeToExit
+            .entries
+            .map { CoordsPsecond(it.key, it.value) }
+            .flatMap { coordsPsecond ->
+                val coords = coordsPsecond.coords
+                val next2Coords = coords.allNext()
+                    .flatMap { next1 -> next1.first.allNext() }
+                    .map { it.first }
+                    .minus(coords)
+                    .toSet()
+                next2Coords.map { CoordsPsecond(it, coordsPsecond.psecond - 2) }.filter { it.psecond > 0 }
+                    .map { Pair(coordsPsecond, it) }
+            }
+        return result
+    }
 
 }
+
