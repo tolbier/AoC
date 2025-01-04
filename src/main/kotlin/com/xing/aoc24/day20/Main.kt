@@ -12,12 +12,18 @@ class Day20 {
         val resultP1 = p1(puzzle)
         println(resultP1)
 
-//        val resultP2 = p2(puzzle)
-//        println(resultP2)
+        val resultP2 = p2(puzzle)
+        println(resultP2)
     }
 
     fun p1(puzzle: Puzzle): Int {
         val map = puzzle.getSavingsCount(geThanPseconds = 100)
+        val sumOfValues = map.values.sum()
+        return sumOfValues
+    }
+
+    fun p2(puzzle: Puzzle): Int {
+        val map = puzzle.setNextStepsF(Puzzle::getNext20StepsFrom).getSavingsCount(geThanPseconds = 100)
         val sumOfValues = map.values.sum()
         return sumOfValues
     }

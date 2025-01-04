@@ -1,5 +1,7 @@
 package com.xing.aoc24.day20
 
+import kotlin.math.abs
+
 data class Coords(val x: Int = -1, val y: Int = -1) {
     fun west() = Coords(x - 1, y)
     fun east() = Coords(x + 1, y)
@@ -14,5 +16,5 @@ data class Coords(val x: Int = -1, val y: Int = -1) {
         }
 
     fun allNext() = Direction.entries.toList().map { next(it) }
-
+    fun psecondsFrom(other: Coords) = abs(this.x - other.x) + abs(this.y - other.y)
 }

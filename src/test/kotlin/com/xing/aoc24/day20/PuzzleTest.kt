@@ -78,7 +78,7 @@ class PuzzleTest {
     }
 
     @Test
-    fun getSavingsCount() {
+    fun getSavingsCountWith2Steps() {
         val puzzle = puzzles[0]
         assertEquals(
             mapOf<Psecond, Int>(
@@ -93,7 +93,7 @@ class PuzzleTest {
                 38 to 1,
                 40 to 1,
                 64 to 1
-            ), puzzle.getSavingsCount()
+            ), puzzle.setNextStepsF(Puzzle::getNext2StepsFrom).getSavingsCount()
         )
         assertEquals(
             mapOf<Psecond, Int>(
@@ -104,7 +104,30 @@ class PuzzleTest {
                 38 to 1,
                 40 to 1,
                 64 to 1
-            ), puzzle.getSavingsCount(geThanPseconds = 10)
+            ), puzzle.setNextStepsF(Puzzle::getNext2StepsFrom).getSavingsCount(geThanPseconds = 10)
+        )
+    }
+
+    @Test
+    fun getSavingsCountWith20Steps() {
+        val puzzle = puzzles[0]
+        assertEquals(
+            mapOf<Psecond, Int>(
+                50 to 32,
+                52 to 31,
+                54 to 29,
+                56 to 39,
+                58 to 25,
+                60 to 23,
+                62 to 20,
+                64 to 19,
+                66 to 12,
+                68 to 14,
+                70 to 12,
+                72 to 22,
+                74 to 4,
+                76 to 3
+            ), puzzle.setNextStepsF(Puzzle::getNext20StepsFrom).getSavingsCount(geThanPseconds = 50)
         )
     }
 }

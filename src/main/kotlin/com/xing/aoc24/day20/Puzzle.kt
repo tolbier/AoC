@@ -1,5 +1,7 @@
 package com.xing.aoc24.day20
 
+import kotlin.reflect.KFunction2
+
 
 data class Puzzle(
     val blockCells: List<Coords> = emptyList(),
@@ -15,10 +17,16 @@ data class Puzzle(
             }
         }.toSet().minus(blockCells)
     val pSecondsMap = getPsecondsMap()
+    private var nextStepsF: KFunction2<Puzzle, Coords, Set<Coords>> = Puzzle::getNext2StepsFrom
+
     fun inPuzzle(coords: Coords): Boolean =
         coords.x in (0..<width) &&
                 coords.y in (0..<height)
 
+    fun setNextStepsF(f: KFunction2<Puzzle, Coords, Set<Coords>>): Puzzle {
+        this.nextStepsF = f
+        return this
+    }
 
     private fun getPsecondsMap(): Map<Coords, Psecond> {
         val result = mutableMapOf<Coords, Psecond>()
@@ -92,7 +100,7 @@ data class Puzzle(
     fun getCheats(): Set<Cheat> {
         val pseconds2Exit = getPseconds2ExitMap()
         val result = pseconds2Exit.flatMap { (coords, _) ->
-            getNext2StepsFrom(coords).map { to -> Cheat(coords, to) }
+            nextStepsF(this, coords).map { to -> Cheat(coords, to) }
         }.toSet()
         return result
     }
@@ -103,6 +111,17 @@ data class Puzzle(
                 coords.next(firstDir).next(secondDir)
             }
         }.filter { it != coords }.filter { inPuzzle(it) }.toSet()
+    }
+
+    fun getNext20StepsFrom(fromCell: Coords): Set<Coords> {
+        //from all freeCells as destiny
+        //get the set of Cells that are far from coords 1 to 20 pSeconds
+
+        val result = freeCells.filter { toCell ->
+            fromCell.psecondsFrom(toCell) in (1..20)
+        }.toSet()
+
+        return result
     }
 
     fun getCheatSavings(): Set<CheatSaving> {
@@ -124,7 +143,9 @@ data class Puzzle(
             saving
         }
 
-    fun getSavingsCount(geThanPseconds: Psecond = 0): Map<Psecond, Int> {
+    fun getSavingsCount(
+        geThanPseconds: Psecond = 0
+    ): Map<Psecond, Int> {
         val savings = getSavings()
         val result = savings.filter { it >= geThanPseconds }.groupBy { it as Psecond }.mapValues { it.value.size }
         return result
