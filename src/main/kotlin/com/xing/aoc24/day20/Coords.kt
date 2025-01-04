@@ -13,6 +13,6 @@ data class Coords(val x: Int = -1, val y: Int = -1) {
             Direction.WEST -> west()
         }
 
-    fun allNext() = Direction.entries.toList().map { Pair(next(it), it) }
+    fun allNext() = Direction.entries.toList().map { next(it) }
 
 }

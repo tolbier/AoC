@@ -1,4 +1,8 @@
 package com.xing.aoc24.day20
 
-data class Cheat(val cheatTime: Psecond = Int.MAX_VALUE, val directions: List<Direction> = emptyList())
+import kotlin.math.abs
+
+data class Cheat(val from: Coords, val to: Coords) {
+    fun pseconds() = abs(from.x - to.x) + abs(from.y - to.y)
+}
 

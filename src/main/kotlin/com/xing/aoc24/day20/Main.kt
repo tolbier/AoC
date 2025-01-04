@@ -17,9 +17,8 @@ class Day20 {
     }
 
     fun p1(puzzle: Puzzle): Int {
-        val map = puzzle.calculateNumberofCheatsToSavePseconds()
-        val filteredMap = map.filter { it.key >= 100 }
-        val sumOfValues = filteredMap.values.sum()
+        val map = puzzle.getSavingsCount(geThanPseconds = 100)
+        val sumOfValues = map.values.sum()
         return sumOfValues
     }
 
